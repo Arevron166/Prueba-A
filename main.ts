@@ -56,8 +56,8 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         . . 4 e e f f f f f f e . . 
         . . . . . . . . f f f . . . 
         `],
-    300,
-    true
+    500,
+    false
     )
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -115,13 +115,14 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         . . f f f f f f f f f f . . 
         . . . f f f . . . f f . . . 
         `],
-    300,
-    true
+    500,
+    false
     )
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Point, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.ashes, 100)
+    sprites.destroy(otherSprite, effects.disintegrate, 100)
     music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
+    music.setVolume(90)
     info.changeScoreBy(1)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -239,10 +240,11 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . . . . f f f . . . 
         `],
     500,
-    false
+    true
     )
 })
 let Stars: Sprite = null
+let Vehicle1: Sprite = null
 let mySprite: Sprite = null
 scene.setBackgroundColor(11)
 tiles.setCurrentTilemap(tilemap`level1`)
@@ -412,6 +414,31 @@ mySprite,
 true
 )
 mySprite.setStayInScreen(true)
+info.setLife(5)
+game.onUpdateInterval(2000, function () {
+    Vehicle1 = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . 6 6 6 6 6 6 6 6 . . . . 
+        . . . 6 9 6 6 6 6 6 6 c 6 . . . 
+        . . 6 c 9 6 6 6 6 6 6 c c 6 . . 
+        . 6 c c 9 9 9 9 9 9 6 c c 9 6 d 
+        . 6 c 6 8 8 8 8 8 8 8 b c 9 6 6 
+        . 6 6 8 b b 8 b b b 8 8 b 9 6 6 
+        . 6 8 b b b 8 b b b b 8 6 6 6 6 
+        . 8 8 6 6 6 8 6 6 6 6 6 8 6 6 6 
+        . 8 8 8 8 8 8 f 8 8 8 f 8 6 d d 
+        . 8 8 8 8 8 8 f 8 8 f 8 8 8 6 d 
+        . 8 8 8 8 8 8 f f f 8 8 8 8 8 8 
+        . 8 f f f f 8 8 8 8 f f f 8 8 8 
+        . . f f f f f 8 8 f f f f f 8 . 
+        . . . f f f . . . . f f f f . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Enemy)
+    Vehicle1.setScale(1.5, ScaleAnchor.Middle)
+    Vehicle1.setPosition(0, randint(75, 180))
+    Vehicle1.vx = 50
+    music.play(music.melodyPlayable(music.footstep), music.PlaybackMode.LoopingInBackground)
+})
 game.onUpdateInterval(20000, function () {
     Stars = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -432,5 +459,6 @@ game.onUpdateInterval(20000, function () {
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Point)
     music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
-    Stars.setPosition(randint(5, 160), randint(20, 200))
+    music.setVolume(105)
+    Stars.setPosition(randint(5, 160), randint(25, 200))
 })
