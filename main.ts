@@ -56,7 +56,7 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         . . 4 e e f f f f f f e . . 
         . . . . . . . . f f f . . . 
         `],
-    500,
+    200,
     false
     )
 })
@@ -115,7 +115,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         . . f f f f f f f f f f . . 
         . . . f f f . . . f f . . . 
         `],
-    500,
+    200,
     false
     )
 })
@@ -319,7 +319,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . f f f f f f . . . . 
         . . . . . f f f . . . . . . 
         `],
-    500,
+    200,
     false
     )
 })
@@ -329,41 +329,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, ot
     game.splash("Has perdido")
     game.gameOver(false)
     game.setGameOverEffect(true, effects.dissolve)
-})
-info.onScore(1, function () {
-    scene.centerCameraAt(127, 20)
-    mySprite.setPosition(127, 10)
-    mySprite.changeScale(0.15, ScaleAnchor.Middle)
-    game.splash("AÚN NO HAS GANADO")
-    game.splash("¿Deseas pasar al siguiente nivel?")
-    story.showPlayerChoices("Sí", "No")
-    tiles.setWallAt(tiles.getTileLocation(8, 1), true)
-    if (story.checkLastAnswer("Sí")) {
-        story.printText("¿Estás seguro?", 127, 50)
-        story.cancelSpriteMovement(mySprite)
-        story.showPlayerChoices("Sí", "No")
-        if (story.checkLastAnswer("Sí")) {
-            story.printText("Muy bien", 127, 50)
-            Stop()
-        } else {
-            story.printText("Está bien", 127, 50)
-            game.splash("Has ganado")
-            game.gameOver(true)
-        }
-    } else {
-        story.printText("¿Estás seguro?", 127, 50)
-        tiles.setWallAt(tiles.getTileLocation(7, 1), true)
-        story.cancelSpriteMovement(mySprite)
-        story.showPlayerChoices("Sí", "No")
-        if (story.checkLastAnswer("Sí")) {
-            story.printText("Está bien", 127, 50)
-            game.splash("Has ganado")
-            game.gameOver(true)
-        } else {
-            story.printText("Muy bien", 127, 50)
-            Stop()
-        }
-    }
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -420,13 +385,48 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . f f f f f f f . . . 
         . . . . . . . . f f f . . . 
         `],
-    500,
+    200,
     true
     )
 })
 info.onLifeZero(function () {
     game.gameOver(false)
     game.setGameOverMessage(false, "GAME OVER!")
+})
+info.onScore(5, function () {
+    scene.centerCameraAt(127, 20)
+    mySprite.setPosition(127, 10)
+    mySprite.changeScale(0.15, ScaleAnchor.Middle)
+    game.splash("AÚN NO HAS GANADO")
+    game.splash("¿Deseas pasar al siguiente nivel?")
+    story.showPlayerChoices("Sí", "No")
+    tiles.setWallAt(tiles.getTileLocation(8, 1), true)
+    if (story.checkLastAnswer("Sí")) {
+        story.printText("¿Estás seguro?", 127, 50)
+        story.cancelSpriteMovement(mySprite)
+        story.showPlayerChoices("Sí", "No")
+        if (story.checkLastAnswer("Sí")) {
+            story.printText("Muy bien", 127, 50)
+            Stop()
+        } else {
+            story.printText("Está bien", 127, 50)
+            game.splash("Has ganado")
+            game.gameOver(true)
+        }
+    } else {
+        story.printText("¿Estás seguro?", 127, 50)
+        tiles.setWallAt(tiles.getTileLocation(7, 1), true)
+        story.cancelSpriteMovement(mySprite)
+        story.showPlayerChoices("Sí", "No")
+        if (story.checkLastAnswer("Sí")) {
+            story.printText("Está bien", 127, 50)
+            game.splash("Has ganado")
+            game.gameOver(true)
+        } else {
+            story.printText("Muy bien", 127, 50)
+            Stop()
+        }
+    }
 })
 function Stop () {
     music.stopAllSounds()
@@ -681,7 +681,7 @@ function Stop () {
     info.setScore(0)
     tiles.placeOnRandomTile(mySprite, sprites.dungeon.floorLight2)
     scene.cameraFollowSprite(mySprite)
-    pause(1000)
+    pause(500)
     game.splash("Consigue otras tres estrellas")
     Avión()
 }
@@ -689,9 +689,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     sprites.destroy(otherSprite)
     info.setLife(info.life() - 1)
 })
-let Stars: Sprite = null
 let Vehicle2: Sprite = null
 let Vehicle1: Sprite = null
+let Stars: Sprite = null
 let projectile: Sprite = null
 let mySprite: Sprite = null
 scene.setBackgroundColor(11)
@@ -838,6 +838,7 @@ mySprite = sprites.create(img`
     `, SpriteKind.Player)
 tiles.placeOnRandomTile(mySprite, sprites.dungeon.floorLight2)
 scene.cameraFollowSprite(mySprite)
+game.splash("Obtén 5 estrellas evitando que te atropellen ")
 controller.moveSprite(mySprite)
 animation.runImageAnimation(
 mySprite,
@@ -859,11 +860,34 @@ mySprite,
     . . . . f f f f f f . . . . 
     . . . . f f . . f f . . . . 
     `],
-500,
+200,
 true
 )
 mySprite.setStayInScreen(true)
 info.setLife(5)
+game.onUpdateInterval(15000, function () {
+    Stars = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . b . . . . . . . 
+        . . . . . . . b d b . . . . . . 
+        . . . . . . b 5 5 5 b . . . . . 
+        . . . . . b b 5 5 5 b b . . . . 
+        . . b b b b 5 5 5 1 1 b b b b . 
+        . . b 5 5 5 5 5 5 1 1 5 5 5 b . 
+        . . b d d 5 5 5 5 5 5 5 d d b . 
+        . . . b d d 5 5 5 5 5 d d b . . 
+        . . . c b 5 5 5 5 5 5 5 b c . . 
+        . . . c b 5 5 5 5 5 5 5 b c . . 
+        . . . c 5 5 d d b d d 5 5 c . . 
+        . . . c 5 d d c c c d d 5 c . . 
+        . . . c c c c . . . c c c c . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.Point)
+    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
+    music.setVolume(105)
+    Stars.setPosition(randint(5, 160), randint(25, 200))
+})
 game.onUpdateInterval(2000, function () {
     Vehicle1 = sprites.create(img`
         . . . . 8 8 8 8 8 . . . . . . . 
@@ -1059,27 +1083,4 @@ game.onUpdateInterval(2000, function () {
     200,
     true
     )
-})
-game.onUpdateInterval(20000, function () {
-    Stars = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . b . . . . . . . 
-        . . . . . . . b d b . . . . . . 
-        . . . . . . b 5 5 5 b . . . . . 
-        . . . . . b b 5 5 5 b b . . . . 
-        . . b b b b 5 5 5 1 1 b b b b . 
-        . . b 5 5 5 5 5 5 1 1 5 5 5 b . 
-        . . b d d 5 5 5 5 5 5 5 d d b . 
-        . . . b d d 5 5 5 5 5 d d b . . 
-        . . . c b 5 5 5 5 5 5 5 b c . . 
-        . . . c b 5 5 5 5 5 5 5 b c . . 
-        . . . c 5 5 d d b d d 5 5 c . . 
-        . . . c 5 d d c c c d d 5 c . . 
-        . . . c c c c . . . c c c c . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Point)
-    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
-    music.setVolume(105)
-    Stars.setPosition(randint(5, 160), randint(25, 200))
 })
