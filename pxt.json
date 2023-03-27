@@ -1,9 +1,10 @@
 {
-    "name": "Revilla Rondinel AV",
+    "name": "Revilla Rondinel AV - Copy",
     "description": "",
     "dependencies": {
         "device": "*",
-        "animation": "*"
+        "animation": "*",
+        "arcade-story": "github:microsoft/arcade-storytelling#v1.0.3"
     },
     "files": [
         "main.blocks",
