@@ -119,7 +119,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     false
     )
 })
-function Avión (mySprite: Sprite) {
+function Avión () {
     pause(10000)
     projectile = sprites.create(img`
         ..ccc.........ffffff....
@@ -142,6 +142,7 @@ function Avión (mySprite: Sprite) {
     projectile.changeScale(1.25, ScaleAnchor.Middle)
     projectile.setVelocity(-50, 50)
     projectile.setPosition(randint(0, 160), 0)
+    projectile.follow(mySprite, 50)
     animation.runImageAnimation(
     projectile,
     [img`
@@ -250,7 +251,6 @@ function Avión (mySprite: Sprite) {
     200,
     true
     )
-    projectile.follow(mySprite, 50)
 }
 sprites.onOverlap(SpriteKind.Enemy, SpriteKind.Enemy, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -260,6 +260,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Point, function (sprite, otherSp
     music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.UntilDone)
     music.setVolume(90)
     info.changeScoreBy(1)
+})
+scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
+    sprites.destroy(sprite, effects.none, 50)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -321,7 +324,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
-    sprites.destroy(mySprite, effects.ashes, 1000)
+    sprites.destroy(mySprite, effects.fountain, 1000)
     music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.UntilDone)
     game.splash("Has perdido")
     game.gameOver(false)
@@ -339,7 +342,7 @@ info.onScore(1, function () {
     story.showPlayerChoices("Sí", "No")
     if (story.checkLastAnswer("Sí")) {
         story.printText("Muy bien", 127, 50)
-        Stop(mySprite, mySprite, mySprite)
+        Stop()
     } else {
         story.printText("Está bien", 127, 50)
         game.splash("Has ganado")
@@ -409,7 +412,7 @@ info.onLifeZero(function () {
     game.gameOver(false)
     game.setGameOverMessage(false, "GAME OVER!")
 })
-function Stop (mySprite: Sprite, mySprite2: Sprite, mySprite3: Sprite) {
+function Stop () {
     if (story.checkLastAnswer("Sí")) {
         music.stopAllSounds()
         scene.setBackgroundImage(img`
@@ -662,7 +665,9 @@ function Stop (mySprite: Sprite, mySprite2: Sprite, mySprite3: Sprite) {
         info.setLife(3)
         tiles.placeOnRandomTile(mySprite, sprites.dungeon.floorLight2)
         scene.cameraFollowSprite(mySprite)
-        Avión(mySprite)
+        pause(1000)
+        game.splash("Consigue otras tres estrellas")
+        Avión()
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -864,7 +869,7 @@ game.onUpdateInterval(2000, function () {
         `, SpriteKind.Enemy)
     Vehicle1.setScale(1.5, ScaleAnchor.Middle)
     Vehicle1.setPosition(0, randint(75, 180))
-    Vehicle1.vx = 50
+    Vehicle1.vx = 75
     music.play(music.melodyPlayable(music.footstep), music.PlaybackMode.LoopingInBackground)
     animation.runImageAnimation(
     Vehicle1,
@@ -962,7 +967,7 @@ game.onUpdateInterval(2000, function () {
         `, SpriteKind.Enemy)
     Vehicle2.setScale(1.5, ScaleAnchor.Middle)
     Vehicle2.setPosition(0, randint(75, 180))
-    Vehicle2.vx = 50
+    Vehicle2.vx = 75
     music.play(music.melodyPlayable(music.footstep), music.PlaybackMode.LoopingInBackground)
     animation.runImageAnimation(
     Vehicle2,
